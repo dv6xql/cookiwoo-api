@@ -6,7 +6,10 @@ from django.contrib.auth.models import (
 
 class UserManager(BaseUserManager):
 
-    def create_user(self, email: str, password: str = None, **extra_fields: dict):
+    def create_user(self,
+                    email: str,
+                    password: str = None,
+                    **extra_fields: dict):
         """Creates and saves a new user"""
         if not email:
             raise ValueError("Users must have an email address")

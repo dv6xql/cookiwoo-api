@@ -41,7 +41,9 @@ class ModelTests(TestCase):
             )
 
     def test_new_user_invalid_password_length(self):
-        """Test creating user with a password shorter than twelve characters raises error"""
+        """
+        Test creating user with a password shorter than 12 chars raises error
+        """
         with self.assertRaises(ValueError):
             get_user_model().objects.create_user(
                 email="test@gawlowski.com.pl",
