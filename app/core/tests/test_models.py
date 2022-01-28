@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 
 class ModelTests(TestCase):
 
-    def test_create_user_with_email_successful(self):
+    def test_create_user_with_email_successful(self) -> None:
         """Test creating a new user with an email is successful"""
         email = "test@gawlowski.com.pl"
         password = "passworD1234"
@@ -15,7 +15,7 @@ class ModelTests(TestCase):
         self.assertEqual(user.email, email)
         self.assertTrue(user.check_password(password))
 
-    def test_new_user_email_normalized(self):
+    def test_new_user_email_normalized(self) -> None:
         """Test the email for a new user is normalized"""
         email = "test@GAWLOWSKI.COM.PL"
         user = get_user_model().objects.create_user(
@@ -24,7 +24,7 @@ class ModelTests(TestCase):
         )
         self.assertEqual(user.email, email.lower())
 
-    def test_new_user_invalid_email(self):
+    def test_new_user_invalid_email(self) -> None:
         """Test creating user with no email raises error"""
         with self.assertRaises(ValueError):
             get_user_model().objects.create_user(
@@ -32,7 +32,7 @@ class ModelTests(TestCase):
                 password='password1234'
             )
 
-    def test_new_user_invalid_password(self):
+    def test_new_user_invalid_password(self) -> None:
         """Test creating user with no password raises error"""
         with self.assertRaises(ValueError):
             get_user_model().objects.create_user(
@@ -40,7 +40,7 @@ class ModelTests(TestCase):
                 password=None
             )
 
-    def test_new_user_invalid_password_length(self):
+    def test_new_user_invalid_password_length(self) -> None:
         """
         Test creating user with a password shorter than 12 chars raises error
         """
@@ -50,7 +50,7 @@ class ModelTests(TestCase):
                 password="123456789"
             )
 
-    def test_create_new_superuser(self):
+    def test_create_new_superuser(self) -> None:
         """Test creating a new superuser"""
         user = get_user_model().objects.create_superuser(
             email="test@gawlowski.com.pl",
