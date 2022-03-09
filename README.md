@@ -8,6 +8,12 @@
 docker-compose run app sh -c "python manage.py createsuperuser"
 ```
 
+### Create migration files
+
+```
+docker-compose run app sh -c "python manage.py makemigrations --name=migration_name"
+```
+
 ### Migrate tables
 
 ```
