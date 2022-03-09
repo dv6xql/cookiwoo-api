@@ -59,4 +59,3 @@ class Tag(models.Model):
 
     def __str__(self) -> models.CharField:
         return self.name
-
