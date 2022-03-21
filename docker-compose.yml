@@ -26,3 +26,19 @@ services:
       - POSTGRES_DB=app
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=supersecretpassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+  pgadmin:
+    image: dpage/pgadmin4
+    depends_on:
+      - db
+    ports:
+      - "5051:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: test@gawlowski.com.pl
+      PGADMIN_DEFAULT_PASSWORD: password1234
+    restart: always
+
+volumes:
+  postgres_data:
