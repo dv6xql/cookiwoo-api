@@ -4,6 +4,7 @@ services:
   app:
     build:
       context: .
+      dockerfile: docker/app/Dockerfile
     ports:
       - ${APP_PORT}:8000
     volumes:
