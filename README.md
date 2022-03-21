@@ -25,3 +25,9 @@ docker-compose run app sh -c "python manage.py migrate"
 ```
 docker-compose run app sh -c "python manage.py test && flake8" 
 ```
+
+### Show urls
+
+```
+docker-compose run app sh -c "python manage.py show_urls"
+```
