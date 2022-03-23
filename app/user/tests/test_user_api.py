@@ -1,3 +1,8 @@
+import tempfile
+import os
+
+from PIL import Image
+
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -9,6 +14,7 @@ from rest_framework import status
 CREATE_USER_URL = reverse("user:create")
 TOKEN_URL = reverse("user:token")
 ME_URL = reverse("user:me")
+UPLOAD_IMAGE_URL = reverse("user:upload-image")
 
 
 def create_user(**params):
@@ -177,3 +183,46 @@ class PrivateUserApiTests(TestCase):
         self.assertTrue(self.user.check_password(payload["password"]))
         self.assertEqual(self.user.email, payload["email"])
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+
+class UserImageUploadTests(TestCase):
+    """Test API request for uploading user image"""
+
+    def setUp(self) -> None:
+        self.client = APIClient()
+        self.user = get_user_model().objects.create(
+            email="test@gawlowski.com.pl",
+            password="password1234"
+        )
+        self.client.force_authenticate(self.user)
+
+    def tearDown(self) -> None:
+        self.user.image.delete()
+
+    def test_upload_user_image(self) -> None:
+        """Test uploading a user image"""
+        with tempfile.NamedTemporaryFile(suffix=".jpg") as ntf:
+            img = Image.new("RGB", (10, 10))
+            img.save(ntf, format="JPEG")
+            ntf.seek(0)
+
+            payload = {
+                "image": ntf
+            }
+            res = self.client.post(UPLOAD_IMAGE_URL,
+                                   payload,
+                                   format="multipart")
+
+            self.user.refresh_from_db()
+            self.assertEqual(res.status_code, status.HTTP_200_OK)
+            self.assertIn("image", res.data)
+            self.assertTrue(os.path.exists(self.user.image.path))
+
+    def test_upload_user_image_bad_request(self) -> None:
+        """Test uploading an invalid user image"""
+        payload = {
+            "image": "invalid"
+        }
+        res = self.client.post(UPLOAD_IMAGE_URL, payload, format="multipart")
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
