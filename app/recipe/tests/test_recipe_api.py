@@ -17,7 +17,7 @@ from recipe.serializers import RecipeSerializer, RecipeDetailSerializer
 RECIPES_URL = reverse("recipe:recipe-list")
 
 
-def image_upload_url(recipe_id):
+def image_upload_url(recipe_id: int) -> str:
     """Return url for recipe image upload"""
     return reverse("recipe:recipe-upload-image", args=[recipe_id])
 

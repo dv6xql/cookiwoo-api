@@ -1,8 +1,15 @@
-from rest_framework import generics, authentication, permissions
+from rest_framework.response import Response
+from rest_framework import (
+    generics, authentication, permissions, status
+)
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
+from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FormParser
 
-from user.serializers import UserSerializer, AuthTokenSerializer
+from user.serializers import (
+    UserSerializer, AuthTokenSerializer, UserImageSerializer
+)
 
 
 class CreateUserView(generics.CreateAPIView):
@@ -25,3 +32,31 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         """Retrieve and return authenticated user"""
         return self.request.user
+
+
+class UserUploadImage(APIView):
+    """Upload user image"""
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    parser_classes = (MultiPartParser, FormParser,)
+
+    @classmethod
+    def post(cls, request, format=None):
+        """Upload an image to a user"""
+        user = request.user
+        serializer = UserImageSerializer(
+            user,
+            data=request.data
+        )
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                serializer.data,
+                status=status.HTTP_200_OK
+            )
+
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
