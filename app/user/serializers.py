@@ -6,10 +6,11 @@ from rest_framework import serializers
 
 class UserSerializer(serializers.ModelSerializer):
     """Serializer for the users object"""
+    image = serializers.CharField(required=False)
 
     class Meta:
         model = get_user_model()
-        fields = ("email", "password", "name")
+        fields = ("email", "password", "name", "image")
         extra_kwargs = {
             "password": {
                 "write_only": True,

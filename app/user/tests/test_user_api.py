@@ -158,7 +158,8 @@ class PrivateUserApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, {
             "name": self.user.name,
-            "email": self.user.email
+            "email": self.user.email,
+            "image": ""
         })
         self.assertNotIn("password", res.data)
 
@@ -226,3 +227,12 @@ class UserImageUploadTests(TestCase):
         res = self.client.post(UPLOAD_IMAGE_URL, payload, format="multipart")
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_retrieve_profile_with_image_success(self) -> None:
+        """Test retrieving profile with user image for logged-in user"""
+        self.test_upload_user_image()
+        res = self.client.get(ME_URL)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertIn("image", res.data)
+        self.assertNotEqual("", self.user.image.path)
